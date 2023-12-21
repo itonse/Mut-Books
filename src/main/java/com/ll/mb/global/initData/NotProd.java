@@ -61,5 +61,6 @@ public class NotProd {
 
         // User1 회원에게 100,000 캐시가 들어왔다, 무통장입금으로 인해, 이 것의 관련 회원은 본인
         memberService.addCash(memberUser1, 100_000, CashLog.EvenType.충전__무통장입금, memberUser1);
+        memberService.addCash(memberUser1, -20_000, CashLog.EvenType.출금__통장입금, memberUser1);
     }
 }

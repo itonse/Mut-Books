@@ -41,5 +41,10 @@ public class MemberService {
     public void addCash(Member member, long price, CashLog.EvenType evenType,
                         BaseEntity relEntity) {
         CashLog cashLog = cashService.addCash(member, price, evenType, relEntity);
+
+        long newRestCash = member.getRestCash() + cashLog.getPrice();    // 회원의 캐시 잔액 변동
+        member.setRestCash(newRestCash);
+
+        memberRepository.save(member);
     }
 }

@@ -16,4 +16,5 @@ import static lombok.AccessLevel.PROTECTED;
 public class Member extends BaseEntity {
     private String username;
     private String password;
+    private long restCash;
 }
