@@ -17,7 +17,7 @@ public class ProductService {
     public Product createProduct(Book book) {
         Product product = Product.builder()
                 .maker(book.getAuthor())
-                .relTypeCode("book")
+                .relTypeCode(book.getModelName())
                 .relId(book.getId())
                 .name(book.getTitle())
                 .price(book.getPrice())
