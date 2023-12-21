@@ -15,6 +15,7 @@ public class ProductService {
 
     @Transactional
     public Product createProduct(Book book) {
+        if (book.getProduct() != null) return book.getProduct();   // 이미 상품화 되었으면 만들지 않는다.
         Product product = Product.builder()
                 .maker(book.getAuthor())
                 .relTypeCode(book.getModelName())
@@ -26,6 +27,9 @@ public class ProductService {
 
         productRepository.save(product);
 
+        book.setProduct(product);   // 해당 책 상품화
+
         return product;
     }
 }
+
