@@ -26,25 +26,19 @@ public class OrderService {    // 주문 관련
         // 입력된 회원의 장바구니 아이템들을 전부 가져온다.
         List<CartItem> cartItems = cartService.findItemsByBuyer(buyer);
 
-        return create(buyer, cartItems);
-    }
-
-    @Transactional
-    public Order create(Member buyer, List<CartItem> cartItems) {
         Order order = Order.builder()
                 .buyer(buyer)
                 .build();
 
         cartItems.stream()
-                .forEach(cartItem -> order.addItem(cartItem));
+                .forEach(order::addItem);
 
-       orderRepository.save(order);
+        orderRepository.save(order);
 
-       // 장바구니의 아이템들을 삭제
-       cartItems.stream()
-               .forEach(cartService::delete);
+        cartItems.stream()
+                .forEach(cartService::delete);
 
-       return order;
+        return order;
     }
 
     @Transactional
