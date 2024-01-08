@@ -62,6 +62,14 @@ public class NotProd {
         cartService.addItem(memberUser1, product2);
         cartService.addItem(memberUser1, product3);
 
+        cartService.addItem(memberUser2, product1);
+        cartService.addItem(memberUser2, product2);
+        cartService.addItem(memberUser2, product3);
+
+        cartService.addItem(memberUser3, product1);
+        cartService.addItem(memberUser3, product2);
+        cartService.addItem(memberUser3, product3);
+
         // User1 회원에게 100,000 캐시가 들어왔다, 무통장입금으로 인해, 이 것의 관련 회원은 본인
         memberService.addCash(memberUser1, 150_000, CashLog.EvenType.충전__무통장입금, memberUser1);
         memberService.addCash(memberUser1, -20_000, CashLog.EvenType.출금__통장입금, memberUser1);
@@ -71,5 +79,11 @@ public class NotProd {
         long order1PayPrice = order1.calcPayPrice();
 
         orderService.payByCashOnly(order1);
+
+        memberService.addCash(memberUser3, 150_000, CashLog.EvenType.충전__무통장입금, memberUser3);
+
+        Order order2 = orderService.createFromCart(memberUser3);    // memberUser3 의 장바구니 주문
+        orderService.payByCashOnly(order2);   // 결제
+        orderService.refund(order2);  // 환불
     }
 }
