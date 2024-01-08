@@ -15,10 +15,13 @@ import static lombok.AccessLevel.PROTECTED;
 @Setter
 @Getter
 @ToString(callSuper = true)
-public class OrderItem extends BaseEntity {
+public class OrderItem extends BaseEntity {    // 주문한 품목
     @ManyToOne
     private Order order;
     @ManyToOne
     private Product product;
 
+    public long getPayPrice() {
+        return product.getPrice();
+    }
 }

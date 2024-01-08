@@ -9,6 +9,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +27,9 @@ import static lombok.AccessLevel.PROTECTED;
 public class Order extends BaseEntity {
     @ManyToOne
     private Member buyer;    // 구매자
-    private boolean isPaid;    // 결제 여부
-    private boolean isCanceled;    // 취소 여부
-    private boolean isRefunded;    // 환불 여부
+    private LocalDateTime payDate;    // 결제일
+    private LocalDateTime cancelDate;    // 취소일
+    private LocalDateTime refundDate;    // 환불일
 
     @Builder.Default   // 빌터패턴을 사용할 때 기본값 설정(객체 생성 시 초기화 보장)
     @OneToMany(mappedBy = "order", cascade = ALL, orphanRemoval = true)   // cascade = ALL: Order 엔티티에 변화가 생겼을 때, 그와 관련된 OrderItem 엔티티들에도 동일한 변화가 적용되도록 설정
@@ -41,5 +42,16 @@ public class Order extends BaseEntity {
                 .build();
 
         orderItems.add(orderItem);
+    }
+
+    public long calcPayPrice() {    // 지불할 금액
+        return orderItems.stream()
+                .mapToLong(OrderItem::getPayPrice)
+                .sum();
+    }
+
+    public void setPaymentDone() {
+        payDate = LocalDateTime.now();
+
     }
 }
