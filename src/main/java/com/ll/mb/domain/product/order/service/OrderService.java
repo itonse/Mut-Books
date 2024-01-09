@@ -64,7 +64,6 @@ public class OrderService {    // 주문 관련
     @Transactional
     public void refund(Order order) {
         long payPrice = order.calcPayPrice();   // 환불되는 금액
-
         memberService.addCash(order.getBuyer(), payPrice, CashLog.EvenType.환불__예치금_주문결제, order);
 
         order.setCancelDone();    // 환불 할때는 취소도 같이 한다

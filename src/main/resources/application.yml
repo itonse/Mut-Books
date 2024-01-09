@@ -14,7 +14,7 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      ddl-auto: update   # update
+      ddl-auto: create-drop
     properties:
       hibernate:
         default_batch_fetch_size: 100   # batch size 조정

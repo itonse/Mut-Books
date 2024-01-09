@@ -50,16 +50,24 @@ public class Order extends BaseEntity {
                 .sum();
     }
 
-    public void setPaymentDone() {    // 결제일 지정
-        payDate = LocalDateTime.now();
+    public void setPaymentDone() {
+        payDate = LocalDateTime.now();    // 결제일 지정
 
+        orderItems.stream()
+                .forEach(OrderItem::setPaymentDone);
     }
 
-    public void setCancelDone() {     // 결제취소일 지정
-        cancelDate = LocalDateTime.now();
+    public void setCancelDone() {
+        cancelDate = LocalDateTime.now();    // 결제취소일 지정
+
+        orderItems.stream()
+                .forEach(OrderItem::setCancelDone);
     }
 
     public void setRefundDone() {
         refundDate = LocalDateTime.now();    // 환불일 지정
+
+        orderItems.stream()
+                .forEach(OrderItem::setRefundDone);
     }
 }
