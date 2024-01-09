@@ -8,32 +8,55 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 @EnableMethodSecurity    // 메소드 수준의 보안 (@PreAuthorize 등) 활성화
 @RequiredArgsConstructor
 public class SecurityConfig {
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(
-                        authorizeHttpRequests -> authorizeHttpRequests
+                .authorizeRequests(authorizeRequests ->
+                        authorizeRequests
+                                .requestMatchers("/gen/**")
+                                .permitAll()
+                                .requestMatchers("/resource/**")
+                                .permitAll()
+                                .requestMatchers("/h2-console/**")
+                                .permitAll()
+                                .requestMatchers("/adm/**")
+                                .hasRole("ADMIN")
                                 .anyRequest()
-                                .permitAll()     // 모든 HTTP 요청에 대해 접근 허용
+                                .permitAll()
                 )
                 .headers(     // HTTP 헤더 보안 설정
-                        headers -> headers
-                                .addHeaderWriter(
-                                        new XFrameOptionsHeaderWriter(     // Clickjacking Attack 방지
-                                                XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN)  //웹 페이지와 프레임이 같은 프로토콜, 도메인 이름, 포트를 사용해야 한다.
+                        headers ->
+                                headers.frameOptions(
+                                        frameOptions ->
+                                                frameOptions.sameOrigin()
                                 )
                 )
                 .csrf(
-                        csrf -> csrf
-                                .ignoringRequestMatchers(
+                        csrf ->
+                                csrf.ignoringRequestMatchers(
                                         "/h2-console/**"    // 해당 경로의 요청에는 CSRF 보호 비활성화
                                 )
+                )
+                .formLogin(
+                        formLogin ->
+                                formLogin
+                                        .loginPage("/member/login")
+                                        .defaultSuccessUrl("/?msg=" + URLEncoder.encode("환영합니다.", StandardCharsets.UTF_8))
+                                        .failureUrl("/member/login?failMsg=" + URLEncoder.encode("아이디 또는 비밀번호가 틀렸습니다.", StandardCharsets.UTF_8))
+                )
+                .logout(
+                        logout ->
+                                logout
+                                        .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
                 );
 
         return http.build();
