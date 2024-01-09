@@ -58,6 +58,28 @@ public class OrderService {    // 주문 관련
         payDone(order);   // 주문완료 처리
     }
 
+    @Transactional
+    public void payByTossPayments(Order order, long pgPayPrice) {     // pgPayPrice: 토스로 결제 할 금액
+        Member buyer = order.getBuyer();
+        long restCash = buyer.getRestCash();    // 구매자가 가이고 있는 예치금
+        long payPrice = order.calcPayPrice();    // 해당 주문의 결제 금액
+
+        long useRestCash = payPrice - pgPayPrice;     // 차액 (해당 주문의 결제 금액 - 토스로 결제 할 금액) -> restCash 에서 차감 될 금액
+
+        memberService.addCash(buyer, pgPayPrice, CashLog.EvenType.충전__토스페이먼츠, order);
+        memberService.addCash(buyer, pgPayPrice * -1, CashLog.EvenType.사용__토스페이먼츠_주문결제, order);
+
+        if (useRestCash > 0) {
+            if (useRestCash > restCash) {    //  사용해야 되는 예치금이 > 가지고 있는 예치금
+                throw new RuntimeException("예치금이 부족합니다.");
+            }
+
+            memberService.addCash(buyer, useRestCash * -1, CashLog.EvenType.사용__예치금_주문결제, order);
+        }
+
+        payDone(order);
+    }
+
     private void payDone(Order order) {
         order.setPaymentDone();
     }
