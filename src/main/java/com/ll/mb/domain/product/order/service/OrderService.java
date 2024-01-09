@@ -1,6 +1,7 @@
 package com.ll.mb.domain.product.order.service;
 
 import com.ll.mb.domain.cash.cash.entity.CashLog;
+import com.ll.mb.domain.global.exception.GlobalException;
 import com.ll.mb.domain.member.member.entity.Member;
 import com.ll.mb.domain.member.member.service.MemberService;
 import com.ll.mb.domain.product.cart.entity.CartItem;
@@ -48,7 +49,7 @@ public class OrderService {    // 주문 관련
         long payPrice = order.calcPayPrice();   // 지불할 금액
 
         if (payPrice > restCash) {
-            throw new RuntimeException("예치금이 부족합니다.");
+            throw new GlobalException("400-1", "예치금이 부족합니다.");
         }
 
         // 고객의 캐시에서 차감

@@ -34,6 +34,7 @@ public class NotProd {
     ApplicationRunner initNotProd() {
         return args -> {
             self.work1();
+            self.work2();
         };
     }
 
@@ -85,5 +86,15 @@ public class NotProd {
         Order order2 = orderService.createFromCart(memberUser3);    // memberUser3 의 장바구니 주문
         orderService.payByCashOnly(order2);   // 결제
         orderService.refund(order2);  // 환불
+    }
+
+    @Transactional
+    public void work2() {
+   // 이미 보유하고 있는 아이템을 장바구니에 담으려고 할 경우 예외 발생
+//        Member memberUser1 = memberService.findByUsername("user1").get();
+//        Product product1 = productService.findById(1L).get();
+//
+//        cartService.addItem(memberUser1, product1);
+
     }
 }

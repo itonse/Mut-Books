@@ -1,5 +1,6 @@
 package com.ll.mb.domain.product.cart.service;
 
+import com.ll.mb.domain.global.exception.GlobalException;
 import com.ll.mb.domain.member.member.entity.Member;
 import com.ll.mb.domain.product.cart.entity.CartItem;
 import com.ll.mb.domain.product.cart.repository.CartItemRepository;
@@ -18,6 +19,10 @@ public class CartService {
 
     @Transactional
     public CartItem addItem(Member buyer, Product product) {
+        if (buyer.has(product)) {
+            throw new GlobalException("400-1", "이미 구매한 상품입니다.");
+        }
+
         CartItem cartItem = CartItem.builder()
                 .buyer(buyer)
                 .product(product)

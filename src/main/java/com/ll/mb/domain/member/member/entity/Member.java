@@ -2,6 +2,7 @@ package com.ll.mb.domain.member.member.entity;
 
 import com.ll.mb.domain.book.book.entity.Book;
 import com.ll.mb.domain.member.myBook.entity.MyBook;
+import com.ll.mb.domain.product.product.entity.Product;
 import com.ll.mb.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -39,5 +40,18 @@ public class Member extends BaseEntity {
 
     public void removeMyBook(Book book) {
         myBooks.removeIf(myBook -> myBook.getBook().equals(book));
+    }
+
+    public boolean hasBook(Book book) {    // 해당 책을 보유하고 있는지 확인(구체적)
+        return myBooks
+                .stream()
+                .anyMatch(myBook -> myBook.getBook().equals(book));
+    }
+
+    public boolean has(Product product) {    // 상품을 보유하고 있는지 확인
+        return switch (product.getRelTypeCode()) {
+            case "book" -> hasBook(product.getBook());   // 상품이 책인 경우
+            default -> false;    // 기본값
+        };
     }
 }
