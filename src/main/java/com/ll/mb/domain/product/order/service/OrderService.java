@@ -71,11 +71,17 @@ public class OrderService {    // 주문 관련
         order.setRefundDone();
     }
 
-    public boolean checkPayPrice(Order order, long payPrice) {
-        if (order.calcPayPrice() != payPrice) {
-            throw new GlobalException("400-2", "결제금액이 일치하지 않습니다.");
+    public boolean checkCanPay(Order order, long pgPayPrice) {
+        if (!canPay(order, pgPayPrice)) {
+            throw new GlobalException("400-2", "PG결제금액 혹은 예치금이 부족하여 결제할 수 없습니다.");
         }
 
         return true;
+    }
+
+    public boolean canPay(Order order, long pgPayPrice) {    // 결제할 수 있는지 확인
+        long restCash = order.getBuyer().getRestCash();
+
+        return order.calcPayPrice() <= restCash + pgPayPrice;    // 결제 할 금액 >= 캐시 잔액 + pg사 결제금액
     }
 }
