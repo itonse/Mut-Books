@@ -4,10 +4,7 @@ import com.ll.mb.domain.global.exception.GlobalException;
 import com.ll.mb.domain.member.member.entity.Member;
 import com.ll.mb.domain.product.cart.entity.CartItem;
 import com.ll.mb.global.jpa.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -26,7 +23,7 @@ import static lombok.AccessLevel.PROTECTED;
 @ToString(callSuper = true)
 @Table(name = "order_")
 public class Order extends BaseEntity {
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member buyer;    // 구매자
     private LocalDateTime payDate;    // 결제일
     private LocalDateTime cancelDate;    // 취소일

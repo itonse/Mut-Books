@@ -86,6 +86,9 @@ public class NotProd {
         Order order2 = orderService.createFromCart(memberUser3);    // memberUser3 의 장바구니 주문
         orderService.payByCashOnly(order2);   // 결제
         orderService.refund(order2);  // 환불
+
+        Order order3 = orderService.createFromCart(memberUser2);
+        orderService.checkPayPrice(order3, 85_000);
     }
 
     @Transactional
